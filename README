@@ -1,0 +1,10 @@
+KingOfTheHill plugin for Bukkit
+
+Dependencies:
+ Factions
+
+Commands:
+ /koth add
+ /koth remove
+ /koth clear
+

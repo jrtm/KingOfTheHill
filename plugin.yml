@@ -1,0 +1,15 @@
+name: KingOfTheHill
+version: '1.00'
+author: Ravn_TM
+main: com.saucesum.mc.koth.KingOfTheHill
+description: Daily King of the Hill factions game.
+commands:
+  koth:
+    description: 'King of the Hill commands.'
+    usage: 'Usage: /<command> add/remove'
+    permission: koth.op
+    aliases: [hill]
+permissions:
+    koth.op:
+        description: 'Grants access to /koth add/remove to modify hill placements'
+        default: op
