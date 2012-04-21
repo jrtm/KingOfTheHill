@@ -1,21 +1,22 @@
 package com.saucesum.mc.koth;
 
-import com.massivecraft.factions.P;
+import org.bukkit.Material;
 
 public class KoTHConf {
 
 	public static String factionName = "KoTH";
 
-	public static int numberOfHills = 5;
+	public static int numberOfHills = 3;
 
-	public static int prizeMoney = 10_000;
+	public static int prizeMoney = 10000;
 
-	private static transient KoTHConf i = new KoTHConf();
+	public static Material hillType = Material.SIGN_POST;
+
 	public static void load() {
-		P.p.persist.loadOrSaveDefault(i, KoTHConf.class, "kothconf");
+
 	}
 	public static void save() {
-		P.p.persist.save(i);
+
 	}
 
 }

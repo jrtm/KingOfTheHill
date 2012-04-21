@@ -1,43 +1,58 @@
 package com.saucesum.mc.koth;
 
+import java.io.Serializable;
+
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
-public class Hill {
-	private final     Block hillBlock;
+public class Hill implements Serializable {
+	private static final long serialVersionUID = 457129825963285778L;
+
+	private final HillLocation location; 
 
 	private final     String name;
-	private transient String king;
+	private volatile  String king;
 
-	public Hill(String name, Block b) {
+	private transient Block block;
+
+	public Hill(String name, HillLocation location) {
 		this.name = name;
 		this.king = null;
 
-		this.hillBlock = b;
+		this.location = location;
+		updateBlock();
+	}
+
+	public void updateBlock() {
+		this.block = location.getLocation().getBlock();
+	}
+
+	public HillLocation getHillLocation() {
+		return location;
 	}
 
 	public Location getLocation() {
-		return hillBlock.getLocation();
+		return location.getLocation();
 	}
 
 	public Chunk getChunk() {
-		return hillBlock.getChunk();
+		return block.getChunk();
 	}
 
 	public Block getBlock() {
-		return hillBlock;
+		return block;
 	}
 
-	public String getKing() {
+	public synchronized String getKing() {
 		return king;
 	}
 
-	public void setKing(String newKing) {
+	public synchronized void setKing(String newKing) {
 		this.king = newKing;
 	}
 
-	public boolean hasKing() {
+	public synchronized boolean hasKing() {
 		return this.king != null;
 	}
 
@@ -48,9 +63,9 @@ public class Hill {
 	@Override
 	public String toString() {
 		if (hasKing()) {
-			return "Hill[" + name + " @ " + hillBlock.getX() + "X " + hillBlock.getY() + "Y " + hillBlock.getZ() + "Z, " + king + "]";
+			return "Hill[" + name + " @ " + block.getX() + "X " + block.getY() + "Y " + block.getZ() + "Z, " + king + "]";
 		} else {
-			return "Hill[" + name + " @ " + hillBlock.getX() + "X " + hillBlock.getY() + "Y " + hillBlock.getZ() + "Z]";
+			return "Hill[" + name + " @ " + block.getX() + "X " + block.getY() + "Y " + block.getZ() + "Z]";
 		}
 	}
 
