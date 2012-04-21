@@ -140,8 +140,8 @@ public class KoTH extends JavaPlugin implements Listener {
 	}
 
 	public void commandClear(Player sender) {
+		claimer.unclaimAll(locations);
 		locations.clear();
-		claimer.unclaimAll();
 
 		sender.sendMessage("Hill locations cleared");
 	}
@@ -155,6 +155,7 @@ public class KoTH extends JavaPlugin implements Listener {
 	}
 
 	public void commandGenerate(Player sender) {
+
 		hills.generate(locations, KoTHConf.numberOfHills);
 		for (Hill hill : hills.getAll()) {
 			sender.sendMessage("Generated " + hill.toString());
