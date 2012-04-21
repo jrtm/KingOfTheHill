@@ -23,9 +23,10 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class KoTH extends JavaPlugin implements Listener {
 
-	public static File mainDirectory = new File("plugins", "KoTH");
+	public static  File mainDirectory = new File("plugins", "KoTH");
 	private static File locationsFile = new File(mainDirectory, "locations.dat");
-	private static File hillsFile = new File(mainDirectory, "hills.dat");
+	private static File hillsFile     = new File(mainDirectory, "hills.dat");
+	private static File confFile      = new File(mainDirectory, "config.json");
 
 	public static final String TAG = "[KoTH]";
 
@@ -37,15 +38,16 @@ public class KoTH extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		mainDirectory.mkdir();
+		KoTHConf.load(confFile);
 
 		locations = new HillLocations(locationsFile);
-		hills = new Hills(this, hillsFile);
-		faction = new HillFaction(KoTHConf.factionName);
-		claimer = new HillClaimer(faction);
+		hills     = new Hills(this, hillsFile);
+		faction   = new HillFaction(KoTHConf.factionName);
+		claimer   = new HillClaimer(faction);
 
 		// Load persistent data
 		locations.load();
-		hills.load();
+		hills.    load();
 
 		// Register bukkit handlers
 		getServer().getPluginManager().registerEvents(this, this);
@@ -56,7 +58,8 @@ public class KoTH extends JavaPlugin implements Listener {
 	public void onDisable() {
 		// Save persistent data
 		locations.save();
-		hills.save();
+		hills.    save();
+		KoTHConf. save(confFile);
 	}
 
 	/* Bukkit event handlers */

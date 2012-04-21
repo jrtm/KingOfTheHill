@@ -35,7 +35,7 @@ public class HillLocations {
 
 			KoTH.info("Loaded "
 					+ (locations == null ? 0 : locations.size())
-					+ " hills");
+					+ " hill locations");
 		} catch (Exception ioe) {
 			KoTH.info("Could not load hill location data: " + ioe);
 		} finally {
