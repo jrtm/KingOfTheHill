@@ -4,39 +4,40 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
-public class KoTHTimer {
+public class DaySplitter implements Runnable {
 
-	private KoTH koth;
+	private int taskId;
 
-	private int taskID;
+	private double perDay;
+	private Runnable callback;
 
 	private long nextTime;
 
-	public KoTHTimer(KoTH koth) {
-		this.koth = koth;
+	public DaySplitter(Plugin plugin, double perDay, Runnable callback, long freq) {
+		this.perDay   = perDay;
+		this.callback = callback;
 
 		updateNext();
 
-		startTimer();
+		this.taskId = Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, this, freq, freq);
 	}
 
-	private void startTimer() {
-		taskID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(koth, new Runnable() {
-			@Override
-			public void run() {
-				if (isReady()) {
-					koth.resetHills();
-					updateNext();
-				}
-			}
+	public void stop() {
+		Bukkit.getScheduler().cancelTask(taskId);
+	}
 
-		}, 5 * 20L, 30 * 20L);
+	@Override
+	public void run() {
+		if (isReady()) {
+			callback.run();
+			updateNext();
+		}
 	}
 
 	private void updateNext() {
 		long now = System.currentTimeMillis();
-
 		this.nextTime = getNext(now);
 	}
 
@@ -52,7 +53,7 @@ public class KoTHTimer {
 		long time = midnight.getTimeInMillis();
 
 		while (time <= now) {
-			time += (24 / KoTHConf.resetsPerDay) * 60 * 60 * 1000;
+			time += (24 / perDay) * 60 * 60 * 1000;
 		}
 
 		return time;
@@ -60,10 +61,6 @@ public class KoTHTimer {
 
 	private boolean isReady() {
 		return System.currentTimeMillis() > nextTime;
-	}
-
-	public void cancelTasks() {
-		Bukkit.getScheduler().cancelTask(taskID);
 	}
 
 }

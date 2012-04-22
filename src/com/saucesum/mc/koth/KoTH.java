@@ -37,7 +37,8 @@ public class KoTH extends JavaPlugin implements Listener {
 	private HillFaction faction;
 	private HillClaimer claimer;
 
-	private KoTHTimer timer;
+	//private KoTHTimer timer;
+	private DaySplitter timer;
 
 	@Override
 	public void onEnable() {
@@ -58,7 +59,12 @@ public class KoTH extends JavaPlugin implements Listener {
 		getCommand("koth").setExecutor(new KoTHCommandExecutor(this));
 
 		// Start timer to reset the hills
-		timer = new KoTHTimer(this);
+		//timer = new KoTHTimer(this);
+		timer = new DaySplitter(this, KoTHConf.resetsPerDay, new Runnable() {
+			@Override public void run() {
+				resetHills();
+			}
+		}, 30 * 20L); 
 	}
 
 	@Override
@@ -67,7 +73,7 @@ public class KoTH extends JavaPlugin implements Listener {
 		locations.save();
 		hills.    save();
 		KoTHConf. save(confFile);
-		timer.cancelTasks();
+		timer.stop();
 	}
 
 	public void resetHills() {
