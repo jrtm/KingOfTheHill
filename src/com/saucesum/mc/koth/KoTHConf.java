@@ -20,7 +20,7 @@ public class KoTHConf {
 	/* The amount of money to award winners */
 	public static int prizeMoney = 10000;
 
-	/* Times to reset per day. 1 = every 24h, 2 = every 12h, 3 = every 8h, etc. */
+	/* Times to reset per day. 1 = every 24h, 2 = every 12h, 3 = every 8h, 96 = every 15min, etc.*/
 	public static double resetsPerDay = 3;
 
 	/* The hill block's type. Signs will have the hill name added as a line */

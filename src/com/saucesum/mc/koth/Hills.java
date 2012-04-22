@@ -201,4 +201,11 @@ public class Hills {
 
 	}
 
+	/**
+	 * Returns the number of hills generated
+	 */
+	public int size() {
+		return hills == null? 0 : hills.length;
+	}
+
 }

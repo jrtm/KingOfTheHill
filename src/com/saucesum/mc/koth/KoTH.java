@@ -85,10 +85,16 @@ public class KoTH extends JavaPlugin implements Listener {
 	}
 
 	private void awardOwnershipPrizes() {
+		StringBuilder winnersStr = new StringBuilder();
+
 		for (Hill hill : hills.getAll()) {
 			if (hill.hasKing()) {
 				awardPrizeToKing(hill);
+				winnersStr.append(" " + hill.getKing());
 			}
+		}
+		if (winnersStr.length() > 0) {
+			getServer().broadcastMessage(ChatColor.AQUA + "KoTH winners:" + ChatColor.RESET + winnersStr);
 		}
 	}
 
@@ -115,7 +121,7 @@ public class KoTH extends JavaPlugin implements Listener {
 	private void generateNewHills() {
 		hills.generate(locations, KoTHConf.numberOfHills);
 		if (hills.isGenerated()) {
-			getServer().broadcastMessage(ChatColor.AQUA + "King of The Hill reset!");
+			getServer().broadcastMessage(ChatColor.AQUA + "King of The Hill reset with " + hills.size() + " hills!");
 		}
 	}
 
@@ -160,7 +166,7 @@ public class KoTH extends JavaPlugin implements Listener {
 		Player oldKing = getKingPlayer(hill);
 		if (oldKing != null) {
 			oldKing.sendMessage(getHillPrefix(hill) + newKing.getDisplayName()
-					+ " stole your throne!");
+					+ " captured your hill!");
 		}
 	}
 
