@@ -1,6 +1,7 @@
 package com.saucesum.mc.koth;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.bukkit.Bukkit;
 
@@ -34,10 +35,27 @@ public class KoTHTimer {
 	}
 
 	private void updateNext() {
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.MINUTE, 3);
+		long now = System.currentTimeMillis();
 
-		nextTime = cal.getTimeInMillis();
+		this.nextTime = getNext(now);
+	}
+
+	private Calendar getMidnight(Calendar cal) {
+		return new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+	}
+
+	private long getNext(long now) {
+		Calendar nowCal = new GregorianCalendar();
+		nowCal.setTimeInMillis(now);
+
+		Calendar midnight = getMidnight(nowCal);
+		long time = midnight.getTimeInMillis();
+
+		while (time <= now) {
+			time += (24 / KoTHConf.resetsPerDay) * 60 * 60 * 1000;
+		}
+
+		return time;
 	}
 
 	private boolean isReady() {
