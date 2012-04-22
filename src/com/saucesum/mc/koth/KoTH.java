@@ -14,6 +14,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.earth2me.essentials.api.Economy;
+
 /**
  * 
  * King of The Hill bukkit plugin
@@ -35,6 +37,8 @@ public class KoTH extends JavaPlugin implements Listener {
 	private HillFaction faction;
 	private HillClaimer claimer;
 
+	private KoTHTimer timer;
+
 	@Override
 	public void onEnable() {
 		mainDirectory.mkdir();
@@ -52,6 +56,9 @@ public class KoTH extends JavaPlugin implements Listener {
 		// Register bukkit handlers
 		getServer().getPluginManager().registerEvents(this, this);
 		getCommand("koth").setExecutor(new KoTHCommandExecutor(this));
+
+		// Start timer to reset the hills
+		timer = new KoTHTimer(this);
 	}
 
 	@Override
@@ -60,6 +67,50 @@ public class KoTH extends JavaPlugin implements Listener {
 		locations.save();
 		hills.    save();
 		KoTHConf. save(confFile);
+		timer.cancelTasks();
+	}
+
+	public void resetHills() {
+		if (hills.isGenerated()) {
+			awardOwnershipPrizes();
+		}
+
+		generateNewHills();
+	}
+
+	private void awardOwnershipPrizes() {
+		for (Hill hill : hills.getAll()) {
+			if (hill.hasKing()) {
+				awardPrizeToKing(hill);
+			}
+		}
+	}
+
+	private void awardPrizeToKing(Hill hill) {
+		String king = hill.getKing();
+		int prize = KoTHConf.prizeMoney;
+
+		try {
+			Economy.add(king, prize);
+			sendToPlayer(king, "You were the king of " + ChatColor.BLUE + "Hill " + hill.getName() + ChatColor.RESET + "! Prize: " + ChatColor.GREEN + "$" + prize);
+
+		} catch (Exception nlpe) {
+			KoTH.warn(nlpe.toString());
+		}
+	}
+
+	private void sendToPlayer(String playerName, String string) {
+		Player player = Bukkit.getPlayer(playerName);
+		if (player != null) {
+			player.sendMessage(string);
+		}
+	}
+
+	private void generateNewHills() {
+		hills.generate(locations, KoTHConf.numberOfHills);
+		if (hills.isGenerated()) {
+			getServer().broadcastMessage(ChatColor.AQUA + "King of The Hill reset!");
+		}
 	}
 
 	/* Bukkit event handlers */
@@ -155,11 +206,7 @@ public class KoTH extends JavaPlugin implements Listener {
 	}
 
 	public void commandGenerate(Player sender) {
-
-		hills.generate(locations, KoTHConf.numberOfHills);
-		for (Hill hill : hills.getAll()) {
-			sender.sendMessage("Generated " + hill.toString());
-		}
+		generateNewHills();
 	}
 
 	/* Utility output methods */
