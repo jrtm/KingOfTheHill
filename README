@@ -2,9 +2,21 @@ KingOfTheHill plugin for Bukkit
 
 Dependencies:
  Factions
+ Essentials
 
 Commands:
+ /koth init
+   Initializes the KoTH faction. Must be used prior to any other commands.
+
+ /koth gen
+   Forces a hill reset
+
  /koth add
+   Adds the current location as a hill location
+
  /koth remove
+   Removes all hill locations in the current chunk
+
  /koth clear
+   Clears all hill locations
 
